@@ -1,0 +1,39 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>Query with URL</title>	
+        
+	    <!--<script src="jslib/jquery-1.12.4.js"></script>-->
+		<script src="jslib/jquery-1.12.4.min.js"></script>
+		
+		<script type="text/javascript">
+			$(function (){
+				$("#btn").click(function(){
+					var surl=$("#service_url").val();
+					var strHtml = "";
+					var $urlTip = $("urlTip");
+					$urlTip.empty();
+					$.getJSON(surl,function(data){
+						$.each(data.layers, function(infoIndex, info){							
+							for(var o in info){								
+								strHtml += info[o] + " ";
+								alert(strHtml);
+							}
+						});
+						$urlTip.html(strHtml);
+					})
+				})
+			})
+		</script>
+	</head>
+	<body>
+		<div id="divframe">
+			<div class="loginDiv">
+				<input type="text" placeholder="Arcgis REST SERVICE URL" id="service_url"/>
+				<input type="button" value="LoadData" id="btn"/>
+			</div>
+			<div id="urlTip">
+			</div>
+		</div>
+	</body>
+</html>

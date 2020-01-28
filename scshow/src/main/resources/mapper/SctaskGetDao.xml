@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhouli.spatialcrowdsourcing.scshow.dao.SctaskGetDao">
+    <resultMap type="com.zhouli.spatialcrowdsourcing.scshow.entity.Sctask" id="Sctask">
+    <id property="sc_push_pusher_id" column="sc_push_pusher_id"/>
+    <result property="sc_push_theme" column="sc_push_theme"/>
+    <result property="sc_push_location_latitude" column="sc_push_location_latitude"/>
+    <result property="sc_push_location_longitude" column="sc_push_location_longitude"/>
+    <result property="sc_push_content" column="sc_push_content"/>
+    <result property="sc_push_professional" column="sc_push_professional"/>
+    <result property="sc_push_finish" column="sc_push_finish"/>
+    <result property="sc_push_timelimit" column="sc_push_timelimit"/>
+    <result property="sc_push_bounty" column="sc_push_bounty"/>
+    </resultMap>
+
+    <resultMap type="com.zhouli.spatialcrowdsourcing.scshow.entity.SctaskGet" id="SctaskGet">
+        <id property="sc_get_pusher_id" column="sc_get_pusher_id"/>
+        <result property="sc_get_theme" column="sc_get_theme"/>
+        <result property="sc_get_location_latitude" column="sc_get_location_latitude"/>
+        <result property="sc_get_location_longitude" column="sc_get_location_longitude"/>
+        <result property="sc_get_content" column="sc_get_content"/>
+        <result property="sc_get_professional" column="sc_get_professional"/>
+        <result property="sc_get_finish" column="sc_get_finish"/>
+        <result property="sc_get_timelimit" column="sc_get_timelimit"/>
+        <result property="sc_get_bounty" column="sc_get_bounty"/>
+        <result property="finish_img" column="finish_img" jdbcType="CLOB"/>
+    </resultMap>
+    <!--&lt;!&ndash;resultMap：用于将Mybatis语句查询的值（即 map）返回给前端-->
+    <!--前面是实体类的属性，后面是数据库表中的列名，将这些封存在resultMap中，赋予id，然后将id指定为mybatis语句查询后返回的resultMap的类型-->
+    <!--目的：使Mybatis语句可以对 数据库和实体类属性进行操作， 使数据库中的数据 能够赋值给 实体类，-->
+    <!--然后通过id和mapper类关联，service层引用Mapper类将数据库中的数据显示在前端-->
+    <!--&ndash;&gt;-->
+
+    <select id="selectGetTasks"  resultMap="SctaskGet">
+        SELECT * FROM "${id}"
+    </select>
+
+    <select id="selectGetTasksByIdAndTheme" parameterType="String" resultMap="SctaskGet">
+        SELECT * FROM SC_GET WHERE sc_get_pusher_id = #{id} AND sc_get_theme = #{theme}
+    </select>
+    <insert id="insertGetTaskToSelf">
+        INSERT INTO "${userID}"(SC_PUSH_PUSHER_ID,SC_PUSH_THEME,SC_PUSH_LOCATION_LATITUDE,SC_PUSH_LOCATION_LONGITUDE,SC_PUSH_CONTENT,SC_PUSH_PROFESSIONAL,SC_PUSH_FINISH,SC_PUSH_TIMELIMIT,SC_PUSH_BOUNTY)
+        SELECT * FROM SC_PUSH WHERE SC_PUSH_PUSHER_ID = ${id}
+    </insert>
+
+    <insert id="insertGetTask">
+        INSERT INTO SC_GET(SC_GET_PUSHER_ID,SC_GET_THEME,SC_GET_LOCATION_LATITUDE,SC_GET_LOCATION_LONGITUDE,SC_GET_CONTENT,SC_GET_PROFESSIONAL,SC_GET_FINISH,SC_GET_TIMELIMIT,SC_GET_BOUNTY)
+        SELECT SC_PUSH_PUSHER_ID,SC_PUSH_THEME,SC_PUSH_LOCATION_LATITUDE,SC_PUSH_LOCATION_LONGITUDE,SC_PUSH_CONTENT,SC_PUSH_PROFESSIONAL,SC_PUSH_FINISH,SC_PUSH_TIMELIMIT,SC_PUSH_BOUNTY FROM SC_PUSH WHERE SC_PUSH_PUSHER_ID = ${_parameter}
+    </insert>
+
+    <delete id="deleteMyGetTask">
+        BEGIN
+        DELETE FROM "${userID}" WHERE SC_PUSH_PUSHER_ID = ${id} AND SC_PUSH_THEME = '${theme}';
+        DELETE FROM SC_GET WHERE SC_GET_PUSHER_ID = ${id} AND SC_GET_THEME = '${theme}';
+        END;
+    </delete>
+
+</mapper>

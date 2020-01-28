@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhouli.spatialcrowdsourcing.scshow.dao.SctaskPushDao">
+    <resultMap type="com.zhouli.spatialcrowdsourcing.scshow.entity.Sctask" id="Sctask">
+    <id property="sc_push_pusher_id" column="sc_push_pusher_id"/>
+    <result property="sc_push_theme" column="sc_push_theme"/>
+    <result property="sc_push_location_latitude" column="sc_push_location_latitude"/>
+    <result property="sc_push_location_longitude" column="sc_push_location_longitude"/>
+    <result property="sc_push_content" column="sc_push_content"/>
+    <result property="sc_push_professional" column="sc_push_professional"/>
+    <result property="sc_push_finish" column="sc_push_finish"/>
+    <result property="sc_push_timelimit" column="sc_push_timelimit"/>
+    <result property="sc_push_bounty" column="sc_push_bounty"/>
+    </resultMap>
+    <!--&lt;!&ndash;resultMap：用于将Mybatis语句查询的值（即 map）返回给前端-->
+    <!--前面是实体类的属性，后面是数据库表中的列名，将这些封存在resultMap中，赋予id，然后将id指定为mybatis语句查询后返回的resultMap的类型-->
+    <!--目的：使Mybatis语句可以对 数据库和实体类属性进行操作， 使数据库中的数据 能够赋值给 实体类，-->
+    <!--然后通过id和mapper类关联，service层引用Mapper类将数据库中的数据显示在前端-->
+    <!--&ndash;&gt;-->
+
+    <select id="selectTasks" parameterType="com.zhouli.spatialcrowdsourcing.scshow.entity.Sctask" resultMap="Sctask">
+        SELECT * FROM SC_PUSH
+    </select>
+
+    <select id="selectMyTasks"  parameterType="String" resultMap="Sctask">
+        SELECT * FROM SC_PUSH WHERE sc_push_pusher_id = #{id}
+    </select>
+
+    <select id="selectPush_idByTheme"  parameterType="String" resultType="java.lang.String">
+        SELECT sc_push_pusher_id FROM SC_PUSH WHERE sc_push_theme = #{theme}
+    </select>
+
+    <select id="selectMyTasksByIdAndTheme"  parameterType="String" resultMap="Sctask">
+        SELECT * FROM SC_PUSH WHERE sc_push_pusher_id = #{id} AND sc_push_theme = #{theme}
+    </select>
+
+    <delete id="deleteMyTask"  parameterType="String">
+        DELETE FROM SC_PUSH WHERE sc_push_pusher_id = #{id} AND sc_push_theme = #{theme}
+    </delete>
+
+    <delete id="deleteMyTaskById"  parameterType="String">
+        DELETE FROM SC_PUSH WHERE sc_push_pusher_id = #{id}
+    </delete>
+</mapper>

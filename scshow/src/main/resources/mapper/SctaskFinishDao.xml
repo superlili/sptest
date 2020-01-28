@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhouli.spatialcrowdsourcing.scshow.dao.SctaskFinishDao">
+    <resultMap type="com.zhouli.spatialcrowdsourcing.scshow.entity.SctaskGet" id="SctaskGet">
+    <id property="sc_get_pusher_id" column="sc_get_pusher_id"/>
+    <result property="sc_get_theme" column="sc_get_theme"/>
+    <result property="sc_get_location_latitude" column="sc_get_location_latitude"/>
+    <result property="sc_get_location_longitude" column="sc_get_location_longitude"/>
+    <result property="sc_get_content" column="sc_get_content"/>
+    <result property="sc_get_professional" column="sc_get_professional"/>
+    <result property="sc_get_finish" column="sc_get_finish"/>
+    <result property="sc_get_timelimit" column="sc_get_timelimit"/>
+    <result property="sc_get_bounty" column="sc_get_bounty"/>
+    <result property="finish_img" column="finish_img" jdbcType="CLOB"/>
+    </resultMap>
+
+    <update id="uploadPicture" parameterType="com.zhouli.spatialcrowdsourcing.scshow.entity.SctaskGet">
+        UPDATE SC_GET SET
+        finish_img = (#{finish_img,jdbcType=CLOB})
+        WHERE sc_get_pusher_id = #{sc_get_pusher_id} AND sc_get_theme = #{sc_get_theme}
+    </update>
+
+
+    <update id="uploadPictureToSelf">
+        UPDATE "${userID}" SET
+        finish_img = (#{image,jdbcType=CLOB})
+        WHERE sc_get_pusher_id = #{id,jdbcType=VARCHAR} AND sc_get_theme = #{theme,jdbcType=VARCHAR}
+    </update>
+
+    <!--上传图片完成任务后，将SC_GET和用户自身表中的SC_GET_FINISH从0改为1-->
+    <update id="updateFinishCode">
+        UPDATE SC_GET SET
+        sc_get_finish = 1
+        WHERE sc_get_pusher_id = #{sc_get_pusher_id} AND sc_get_theme = #{sc_get_theme}
+    </update>
+
+    <update id="updateFinishCodeToSelf">
+        UPDATE SC_GET SET
+        sc_get_finish = 1
+        WHERE sc_get_pusher_id = #{sc_get_pusher_id} AND sc_get_theme = #{sc_get_theme}
+    </update>
+</mapper>

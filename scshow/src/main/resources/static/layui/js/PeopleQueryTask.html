@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+  <head>
+  <title>AGIS Web Development</title>
+  <link rel="stylesheet" href="http://localhost/arcgis_js_v314_api/arcgis_js_api/library/3.14/3.14/esri/css/esri.css">
+	<link rel="stylesheet" type="text/css" href="http://localhost/arcgis_js_v314_api/arcgis_js_api/library/3.14/3.14/dgrid/css/skins/claro.css" />
+	<link rel="stylesheet" type="text/css" href="http://localhost/arcgis_js_v314_api/arcgis_js_api/library/3.14/3.14/dgrid/css/skins/tundra.css"/>
+	<style type="text/css">
+      #population {
+        float: right;
+      }
+      #map {
+        position: absolute;
+        top: 35px;
+        right: 0;
+        left: 0;
+        bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <select id="population" name="population">
+      <option value="" selected="selected">Select grid</option>
+      <option value="0">0</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+	  <option value="3">3</option>
+	  <option value="4">4</option>
+	  <option value="5">5</option>
+	  <option value="6">6</option>
+	  <option value="7">7</option>
+	  <option value="8">8</option>
+	  <option value="9">9</option>
+    </select>
+	<button id="BTON">run</button>	
+    <div id="map"></div>
+	
+	<script type="text/javascript" src="http://localhost/arcgis_js_v314_api/arcgis_js_api/library/3.14/3.14/init.js"></script>
+<!-- 	<script type="text/javascript" src="../easyui/jquery.min.js"></script>	 -->
+    <script type="text/javascript">
+		require([
+		  "esri/map",
+      "esri/layers/ArcGISDynamicMapServiceLayer",
+		  "esri/tasks/QueryTask",
+		  "esri/tasks/query",
+		  "esri/symbols/SimpleMarkerSymbol",
+		  "esri/InfoTemplate",
+		  "dojo/_base/Color",
+		  "dojo/dom",
+		  "dojo/on",
+		  "dojo/domReady!"
+		], function(Map, ArcGISDynamicMapServiceLayer, QueryTask, Query, SimpleMarkerSymbol, InfoTemplate, Color, dom, on) {
+			
+		  var map = new esri.Map("map");
+		  var myDynamicMapServiceLayer = new esri.layers.ArcGISDynamicMapServiceLayer("http://localhost:6080/arcgis/rest/services/Test/FSpQ/MapServer");
+		  map.addLayer(myDynamicMapServiceLayer);
+		  queryTask = new QueryTask("http://localhost:6080/arcgis/rest/services/Test/FSpQ/MapServer/0");
+		  query = new Query();
+		  query.returnGeometry = true; 
+		  query.outFields = ["id","latitude", "longtitude", "grid"];
+		  //"*"表示查询所有属性。查询个别属性query.outFields=["属性1","属性2",...,"属性n"]
+		  infoTemplate = new InfoTemplate("${id}", "latitude : ${latitude}<br/> longtitude : ${longtitude}<br />grid : ${grid}");
+		  
+		  symbol = new SimpleMarkerSymbol();
+          symbol.setStyle(SimpleMarkerSymbol.STYLE_SQUARE);
+          symbol.setSize(10);
+          symbol.setColor(new Color([255,255,0,0.5]));
+		  on(dom.byId("BTON"), "click", executeQueryTask);
+		  
+		  
+		  function executeQueryTask() {
+		  	query.where = "grid =" + dom.byId("population").value;
+		  	queryTask.execute(query,showResults);
+		  }
+		  
+		  
+		  function showResults(featureSet) {
+		  //remove all graphics on the maps graphics layer
+		  map.graphics.clear();
+		  //Performance enhancer - assign featureSet array to a single variable.
+		  var resultFeatures = featureSet.features;
+		  //Loop through each feature returned
+		  for (var i=0, il=resultFeatures.length; i<il; i++) {
+				//Get the current feature from the featureSet.
+				//Feature is a graphic
+				var graphic = resultFeatures[i];
+				graphic.setSymbol(symbol);
+				//Set the infoTemplate.
+				graphic.setInfoTemplate(infoTemplate);
+				//Add graphic to the map graphics layer.
+				map.graphics.add(graphic);
+			}
+		  }
+		  
+		});
+	</script>
+  </body>
+</html>		  
+

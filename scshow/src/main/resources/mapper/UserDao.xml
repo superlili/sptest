@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhouli.spatialcrowdsourcing.scshow.dao.UserDao">
+    <!--<resultMap type="com.example.demo.entity.Login" id="login">-->
+    <!--<result property="username" column="username"/>-->
+    <!--<result property="password" column="password"/>-->
+    <!--&lt;!&ndash;resultMap：用于将Mybatis语句查询的值（即 map）返回给前端-->
+    <!--前面是实体类的属性，后面是数据库表中的列名，将这些封存在resultMap中，赋予id，然后将id指定为mybatis语句查询后返回的resultMap的类型-->
+    <!--目的：使Mybatis语句可以对 数据库和实体类属性进行操作， 使数据库中的数据 能够赋值给 实体类，-->
+    <!--然后通过id和mapper类关联，service层引用Mapper类将数据库中的数据显示在前端-->
+    <!--&ndash;&gt;-->
+    <!--</resultMap>-->
+    <select id="toLogin" resultType="java.lang.Integer" parameterType="com.zhouli.spatialcrowdsourcing.scshow.entity.User">
+        SELECT count(*) FROM SC_USERS WHERE SC_USERS_NAME = #{username} and SC_USERS_PASSWORD = #{password}
+    </select>
+
+    <select id="getpusher_id" resultType="java.lang.String" parameterType="com.zhouli.spatialcrowdsourcing.scshow.entity.User">
+        SELECT SC_USERS_ID FROM SC_USERS WHERE SC_USERS_NAME = #{username}
+    </select>
+</mapper>

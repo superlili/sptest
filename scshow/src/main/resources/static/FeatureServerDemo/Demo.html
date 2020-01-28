@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>ArcGIS JavaScript API: Spatial_Crwodsourcing</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/3.26/esri/css/claro.css"/>
+	<link rel="stylesheet" href="https://js.arcgis.com/3.26/esri/css/esri.css"/>
+	
+	<script src="https://js.arcgis.com/3.26/"></script>
+	
+	<style>
+      html, body, #map {
+	    top: 35px;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+	
+    <script type="text/javascript">
+        var djConfig = {parseOnLoad: true};
+    </script>
+	
+    <script type="text/javascript">
+		dojo.require("dijit.layout.BorderContainer");
+
+        dojo.require("esri.map");
+        var map;
+
+        function init() {
+            map = new esri.Map("map");
+			var mapurl = "http://localhost:6080/arcgis/rest/services/TEST/CrowdDB/MapServer";
+            var layer = new esri.layers.ArcGISDynamicMapServiceLayer(mapurl);
+            map.addLayer(layer);
+        }
+
+        dojo.addOnLoad(init);
+    </script>
+</head>
+<body class="claro">
+    <div id="map"></div>
+</body>
+</html>
